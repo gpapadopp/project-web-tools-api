@@ -7,6 +7,7 @@ use \App\Http\Controllers\RolesController;
 use \App\Http\Controllers\CoursesController;
 use \App\Http\Controllers\CourseTypesController;
 use \App\Http\Controllers\EvaluationsController;
+use \App\Http\Controllers\EvaluationsMetaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,4 +64,12 @@ Route::controller(EvaluationsController::class)->middleware(['cors'])->group(fun
     Route::post('evaluations/add', 'add');
     Route::post('evaluations/{id}', 'update');
     Route::delete("evaluations/{id}", 'delete');
+});
+
+Route::controller(EvaluationsMetaController::class)->middleware(['cors'])->group(function() {
+    Route::get('evaluations-meta/', 'index');
+    Route::get('evaluations-meta/{id}', 'specific');
+    Route::post('evaluations-meta/add', 'add');
+    Route::post('evaluations-meta/{id}', 'update');
+    Route::delete("evaluations-meta/{id}", 'delete');
 });
