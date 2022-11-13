@@ -20,4 +20,12 @@ class courses extends Model
     protected $hidden = [];
 
     protected $casts = [];
+
+    public function course_type(){
+        return $this->belongsTo(course_types::class, 'course_type_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(users::class, 'user_id');
+    }
 }

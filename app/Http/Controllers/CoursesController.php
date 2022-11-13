@@ -20,7 +20,7 @@ class CoursesController extends Controller
         $user_details = users::where('id', Auth::id())->first();
         $user_roles = roles::where('id', $user_details['role_id'])->first();
         if ($user_roles['read_right'] == 1){
-            $all_courses = courses::all();
+            $all_courses = courses::with(['course_type', 'user'])->get();
             return response()->json([
                 'status' => 'success',
                 'all_courses' => $all_courses,
@@ -36,7 +36,9 @@ class CoursesController extends Controller
         $user_details = users::where('id', Auth::id())->first();
         $user_roles = roles::where('id', $user_details['role_id'])->first();
         if ($user_roles['read_right'] == 1){
-            $specific_course = courses::where('id', $request->id)->first();
+            $specific_course = courses::where('id', $request->id)
+                ->with(['course_type', 'user'])
+                ->first();
             return response()->json([
                 'status' => 'success',
                 'specific_course' => $specific_course,
@@ -89,7 +91,9 @@ class CoursesController extends Controller
             if (sizeof($fields) != 0){
                 courses::where('id', $request->id)->update($fields);
             }
-            $course_to_return = courses::where('id', $request->id)->first();
+            $course_to_return = courses::where('id', $request->id)
+                ->with(['course_type', 'user'])
+                ->first();
             return response()->json([
                 'status' => 'success',
                 'updated_course' => $course_to_return,
