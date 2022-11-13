@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\RolesController;
 use \App\Http\Controllers\CoursesController;
+use \App\Http\Controllers\CourseTypesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,4 +47,12 @@ Route::controller(CoursesController::class)->middleware(['cors'])->group(functio
     Route::post('courses/add', 'add');
     Route::post('courses/{id}', 'update');
     Route::delete('courses/{id}', 'delete');
+});
+
+Route::controller(CourseTypesController::class)->middleware(['cors'])->group(function() {
+    Route::get("course-types/", 'index');
+    Route::get('course-types/{id}', 'specific');
+    Route::post('course-types/add', 'add');
+    Route::post('course-types/{id}', 'update');
+    Route::delete('course-types/{id}', 'delete');
 });

@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class course_types extends Model
 {
     use HasFactory;
+    public $timestamps = true;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'disabled',
+    ];
+
+    protected $hidden = [];
+
+    protected $casts = [
+        'disabled' => 'boolean'
+    ];
 }
