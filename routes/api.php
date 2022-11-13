@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\UsersController;
+use \App\Http\Controllers\RolesController;
+use \App\Http\Controllers\CoursesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::controller(UsersController::class)->group(function() {
+Route::controller(UsersController::class)->middleware(['cors'])->group(function() {
     Route::get("users/", 'index');
     Route::post("users/login/", 'login');
     Route::get('users/{id}', 'specific');
@@ -28,4 +30,20 @@ Route::controller(UsersController::class)->group(function() {
     Route::post('users/{id}', 'update');
     Route::delete('users/{id}', 'delete');
     Route::post('users/public/add', 'register');
+});
+
+Route::controller(RolesController::class)->middleware(['cors'])->group(function() {
+    Route::get('roles/', 'index');
+    Route::get('roles/{id}', 'specific');
+    Route::post('roles/add', 'add');
+    Route::post('roles/{id}', 'update');
+    Route::delete('roles/{id}', 'delete');
+});
+
+Route::controller(CoursesController::class)->middleware(['cors'])->group(function() {
+    Route::get("courses/", 'index');
+    Route::get('courses/{id}', 'specific');
+    Route::post('courses/add', 'add');
+    Route::post('courses/{id}', 'update');
+    Route::delete('courses/{id}', 'delete');
 });

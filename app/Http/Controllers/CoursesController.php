@@ -3,83 +3,117 @@
 namespace App\Http\Controllers;
 
 use App\Models\courses;
+use App\Models\roles;
+use App\Models\users;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CoursesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth:api', ['except' => []]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function index() :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['read_right'] == 1){
+            $all_courses = courses::all();
+            return response()->json([
+                'status' => 'success',
+                'all_courses' => $all_courses,
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+    public function specific(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['read_right'] == 1){
+            $specific_course = courses::where('id', $request->id)->first();
+            return response()->json([
+                'status' => 'success',
+                'specific_course' => $specific_course,
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\courses  $courses
-     * @return \Illuminate\Http\Response
-     */
-    public function show(courses $courses)
-    {
-        //
+    public function add(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['create_right'] == 1){
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string|max:255',
+                'user_id' => 'required|int',
+                'course_type_id' => 'required|int'
+            ]);
+            $created_course = courses::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'user_id' => $request->user_id,
+                'course_type_id' => $request->course_type_id
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'created_course' => $created_course,
+            ], 201);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\courses  $courses
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(courses $courses)
-    {
-        //
+    public function update(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['update_right'] == 1){
+            $fields = $request->validate([
+                'name' => 'string|max:255',
+                'description' => 'string|max:255',
+                'user_id' => 'int',
+                'course_type_id' => 'int'
+            ]);
+
+            if (sizeof($fields) != 0){
+                courses::where('id', $request->id)->update($fields);
+            }
+            $course_to_return = courses::where('id', $request->id)->first();
+            return response()->json([
+                'status' => 'success',
+                'updated_course' => $course_to_return,
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\courses  $courses
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, courses $courses)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\courses  $courses
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(courses $courses)
-    {
-        //
+    public function delete(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['delete_right'] == 1){
+            courses::where('id', $request->id)->update(array('disabled' => 1));
+            return response()->json([
+                'status' => 'success',
+                'message' => "Course Deleted",
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 }
