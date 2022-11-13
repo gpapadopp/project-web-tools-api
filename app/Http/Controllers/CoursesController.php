@@ -100,20 +100,4 @@ class CoursesController extends Controller
             'message' => 'Unauthorized',
         ], 401);
     }
-
-    public function delete(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['delete_right'] == 1){
-            courses::where('id', $request->id)->update(array('disabled' => 1));
-            return response()->json([
-                'status' => 'success',
-                'message' => "Course Deleted",
-            ], 200);
-        }
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Unauthorized',
-        ], 401);
-    }
 }

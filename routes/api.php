@@ -46,7 +46,6 @@ Route::controller(CoursesController::class)->middleware(['cors'])->group(functio
     Route::get('courses/{id}', 'specific');
     Route::post('courses/add', 'add');
     Route::post('courses/{id}', 'update');
-    Route::delete('courses/{id}', 'delete');
 });
 
 Route::controller(CourseTypesController::class)->middleware(['cors'])->group(function() {
