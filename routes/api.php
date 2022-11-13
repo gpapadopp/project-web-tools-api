@@ -23,9 +23,9 @@ Route::controller(UsersController::class)->group(function() {
     Route::get("users/", 'index');
     Route::post("users/login/", 'login');
     Route::get('users/{id}', 'specific');
+    Route::post('users/verify', 'verify');
     Route::post('users/add', 'add');
     Route::post('users/{id}', 'update');
     Route::delete('users/{id}', 'delete');
     Route::post('users/public/add', 'register');
-    Route::post('users/verify', 'verify');
 });
