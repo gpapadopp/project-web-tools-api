@@ -21,11 +21,13 @@ class users extends Authenticatable implements JWTSubject
         'password',
         'role_id',
         'locked',
-        'disabled'
+        'disabled',
+        'token'
     ];
 
     protected $hidden = [
-        'password'
+        'password',
+        'token'
     ];
 
     protected $casts = [
@@ -41,5 +43,9 @@ class users extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function role(){
+        return $this->belongsTo(roles::class, 'role_id');
     }
 }
