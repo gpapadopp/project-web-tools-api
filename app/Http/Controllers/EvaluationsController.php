@@ -3,83 +3,107 @@
 namespace App\Http\Controllers;
 
 use App\Models\evaluations;
+use App\Models\roles;
+use App\Models\users;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class EvaluationsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth:api', ['except' => []]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function index() :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['read_right'] == 1){
+            $all_evaluations = evaluations::with(['user', 'course', 'course.course_type'])->get();
+            return response()->json([
+                'status' => 'success',
+                'all_evaluations' => $all_evaluations,
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+    public function specific(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['read_right'] == 1){
+            $specific_evaluation = evaluations::where('id', $request->id)
+                ->with(['user', 'course', 'course.course_type'])
+                ->first();
+            return response()->json([
+                'status' => 'success',
+                'specific_evaluation' => $specific_evaluation,
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\evaluations  $evaluations
-     * @return \Illuminate\Http\Response
-     */
-    public function show(evaluations $evaluations)
-    {
-        //
+    public function add(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['create_right'] == 1){
+            $request->validate([
+                'course_id' => 'required|int',
+                'user_id' => 'required|int',
+            ]);
+
+            $registration_token = Str::random(32);
+
+            $created_evaluations = evaluations::create([
+                'token' => $registration_token,
+                'is_done' => 0,
+                'user_id' => $request->user_id,
+                'course_id' => $request->course_id
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'created_evaluations' => $created_evaluations,
+            ], 201);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\evaluations  $evaluations
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(evaluations $evaluations)
-    {
-        //
-    }
+    public function update(Request $request) :JsonResponse {
+        $user_details = users::where('id', Auth::id())->first();
+        $user_roles = roles::where('id', $user_details['role_id'])->first();
+        if ($user_roles['update_right'] == 1){
+            $fields = $request->validate([
+                'course_id' => 'int',
+                'user_id' => 'int',
+                'is_done' => 'int',
+                'average' => 'float'
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\evaluations  $evaluations
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, evaluations $evaluations)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\evaluations  $evaluations
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(evaluations $evaluations)
-    {
-        //
+            if (sizeof($fields) != 0){
+                evaluations::where('id', $request->id)->update($fields);
+            }
+            $evaluation_to_return = evaluations::where('id', $request->id)
+                ->with(['user', 'course', 'course.course_type'])
+                ->first();
+            return response()->json([
+                'status' => 'success',
+                'updated_evaluation' => $evaluation_to_return,
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401);
     }
 }

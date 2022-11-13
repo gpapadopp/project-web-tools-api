@@ -6,6 +6,7 @@ use \App\Http\Controllers\UsersController;
 use \App\Http\Controllers\RolesController;
 use \App\Http\Controllers\CoursesController;
 use \App\Http\Controllers\CourseTypesController;
+use \App\Http\Controllers\EvaluationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,4 +55,12 @@ Route::controller(CourseTypesController::class)->middleware(['cors'])->group(fun
     Route::post('course-types/add', 'add');
     Route::post('course-types/{id}', 'update');
     Route::delete('course-types/{id}', 'delete');
+});
+
+Route::controller(EvaluationsController::class)->middleware(['cors'])->group(function() {
+    Route::get('evaluations/', 'index');
+    Route::get('evaluations/{id}', 'specific');
+    Route::post('evaluations/add', 'add');
+    Route::post('evaluations/{id}', 'update');
+    Route::delete("evaluations/{id}", 'delete');
 });
