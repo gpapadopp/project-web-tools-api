@@ -106,4 +106,14 @@ class EvaluationsController extends Controller
             'message' => 'Unauthorized',
         ], 401);
     }
+
+    public function getEvaluationByToken(Request $request) :JsonResponse {
+        $evaluation_to_return = evaluations::where('token', $request->token)
+            ->with(['user', 'course', 'course.course_type'])
+            ->first();
+        return response()->json([
+            'status' => 'success',
+            'updated_evaluation' => $evaluation_to_return,
+        ], 200);
+    }
 }
