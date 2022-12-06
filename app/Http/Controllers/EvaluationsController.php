@@ -109,7 +109,7 @@ class EvaluationsController extends Controller
 
     public function getEvaluationByToken(Request $request) :JsonResponse {
         $evaluation_to_return = evaluations::where('token', $request->token)
-            ->with(['user', 'course', 'course.course_type'])
+            ->with(['user', 'course', 'course.course_type', 'course.user'])
             ->first();
         return response()->json([
             'status' => 'success',
