@@ -63,6 +63,7 @@ Route::controller(EvaluationsController::class)->middleware(['cors'])->group(fun
     Route::get("evaluations/getByToken/{token}", 'getEvaluationByToken');
     Route::get('evaluations/{id}', 'specific');
     Route::post('evaluations/add', 'add');
+    Route::post('evaluations/finish', 'finishEvaluation');
     Route::post('evaluations/{id}', 'update');
     Route::delete("evaluations/{id}", 'delete');
 });

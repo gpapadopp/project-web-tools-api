@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\evaluations;
+use App\Models\evaluations_meta;
 use App\Models\roles;
 use App\Models\users;
 use Illuminate\Http\JsonResponse;
@@ -105,6 +106,21 @@ class EvaluationsController extends Controller
             'status' => 'error',
             'message' => 'Unauthorized',
         ], 401);
+    }
+
+    public function finishEvaluation(Request $request) :JsonResponse {
+        //Get Answer AVG
+        $all_answer_avg = evaluations_meta::query()
+            ->average("meta_value")
+            ->where('evaluation_id', $request->id)
+            ->get();
+        evaluations::query()
+            ->where('id', $request->id)
+            ->update(array("average" => $all_answer_avg, "is_done" => 1, "user_id" => Auth::id()));
+        return response()->json([
+            'status' => 'success',
+            'message' => "Evaluation Saved",
+        ], 200);
     }
 
     public function getEvaluationByToken(Request $request) :JsonResponse {
