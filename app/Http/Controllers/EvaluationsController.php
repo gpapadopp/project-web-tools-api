@@ -111,12 +111,11 @@ class EvaluationsController extends Controller
     public function finishEvaluation(Request $request) :JsonResponse {
         //Get Answer AVG
         $all_answer_avg = evaluations_meta::query()
-            ->average("meta_value")
             ->where('evaluation_id', $request->id)
             ->get();
         evaluations::query()
             ->where('id', $request->id)
-            ->update(array("average" => $all_answer_avg, "is_done" => 1, "user_id" => Auth::id()));
+            ->update(array("average" => $all_answer_avg->average("meta_value"), "is_done" => 1, "user_id" => Auth::id()));
         return response()->json([
             'status' => 'success',
             'message' => "Evaluation Saved",
