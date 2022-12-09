@@ -57,8 +57,7 @@ class EvaluationsController extends Controller
         $user_roles = roles::where('id', $user_details['role_id'])->first();
         if ($user_roles['create_right'] == 1){
             $request->validate([
-                'course_id' => 'required|int',
-                'user_id' => 'required|int',
+                'course_id' => 'required|int'
             ]);
 
             $registration_token = Str::random(32);
@@ -66,7 +65,6 @@ class EvaluationsController extends Controller
             $created_evaluations = evaluations::create([
                 'token' => $registration_token,
                 'is_done' => 0,
-                'user_id' => $request->user_id,
                 'course_id' => $request->course_id
             ]);
             return response()->json([
