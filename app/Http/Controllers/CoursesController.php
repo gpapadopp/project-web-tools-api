@@ -62,7 +62,7 @@ class CoursesController extends Controller
             $created_course = courses::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'user_id' => Auth::id,
+                'user_id' => Auth::id(),
                 'course_type_id' => $request->course_type_id
             ]);
             return response()->json([
