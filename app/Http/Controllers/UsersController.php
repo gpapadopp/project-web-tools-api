@@ -54,7 +54,8 @@ class UsersController extends Controller
             'username' => 'required|string|max:255',
             'email' => 'required|string|max:255',
             'disabled' => 'required|int',
-            'role_id' => 'required|int'
+            'role_id' => 'required|int',
+            'password' => 'required|string|max:255'
         ]);
 
         $registration_token = Str::random(32);
@@ -64,14 +65,13 @@ class UsersController extends Controller
             'last_name' => $request->last_name,
             'phone' => $request->phone,
             'username' => $request->username,
-            'password' => '-',
+            'password' => Hash::make($request->password),
             'disabled' => $request->disabled,
             'role_id' => $request->role_id,
-            'locked' => 1,
+            'locked' => 0,
             'token' => $registration_token,
             'email' => $request->email
         ]);
-        $this->sendEmail($request->email, $registration_token);
         return response()->json([
             'status' => 'success',
             'added_user' => $created_user,
