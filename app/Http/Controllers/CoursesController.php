@@ -57,13 +57,12 @@ class CoursesController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'required|string|max:255',
-                'user_id' => 'required|int',
                 'course_type_id' => 'required|int'
             ]);
             $created_course = courses::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'user_id' => $request->user_id,
+                'user_id' => Auth::id,
                 'course_type_id' => $request->course_type_id
             ]);
             return response()->json([
