@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendUserVerificationEmail;
+use App\Models\evaluations;
 use App\Models\roles;
 use App\Models\users;
 use Illuminate\Http\JsonResponse;
@@ -208,6 +209,16 @@ class UsersController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User Confirmed Successfully',
+        ], 200);
+    }
+
+    public function getUserEvaluations() :JsonResponse {
+        $all_user_evaluations = evaluations::query()
+            ->where('user_id', Auth::id())
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'all_evaluations' => $all_user_evaluations
         ], 200);
     }
 
