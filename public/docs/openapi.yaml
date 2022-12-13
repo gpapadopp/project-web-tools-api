@@ -1,0 +1,607 @@
+openapi: 3.0.3
+info:
+  title: WebToolsProject
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'https://project-api.gpapadopp.eu'
+paths:
+  /api/users/login:
+    post:
+      summary: 'API endpoints for login users'
+      operationId: aPIEndpointsForLoginUsers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: mnitzsche@example.net
+                password:
+                  type: string
+                  description: ''
+                  example: x%RinFJ3uN3
+              required:
+                - email
+                - password
+      security: []
+  /api/users/verify:
+    post:
+      summary: ''
+      operationId: postApiUsersVerify
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: '."k.cF/}MpNFT'
+                token:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: uqiswqcopc
+              required:
+                - password
+                - token
+      security: []
+  /api/users/add:
+    post:
+      summary: ''
+      operationId: postApiUsersAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/users/{id}':
+    post:
+      summary: ''
+      operationId: postApiUsersId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    delete:
+      summary: ''
+      operationId: deleteApiUsersId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: et
+        required: true
+        schema:
+          type: string
+  /api/users/public/add:
+    post:
+      summary: ''
+      operationId: postApiUsersPublicAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: wbxconcgrznn
+                last_name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: vpextysbjhwdgwzrmuzq
+                phone:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: dulvjeidqkqzaldpocyxyfm
+                username:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: ygtoicf
+                email:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: bailey.leanna@example.com
+                disabled:
+                  type: integer
+                  description: ''
+                  example: 1
+                role_id:
+                  type: integer
+                  description: ''
+                  example: 19
+                password:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: 'A{QJ3l5wHO->D|--'
+              required:
+                - first_name
+                - last_name
+                - phone
+                - username
+                - email
+                - disabled
+                - role_id
+                - password
+      security: []
+  /api/roles/add:
+    post:
+      summary: ''
+      operationId: postApiRolesAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/roles/{id}':
+    post:
+      summary: ''
+      operationId: postApiRolesId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    delete:
+      summary: ''
+      operationId: deleteApiRolesId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the role.'
+        example: rem
+        required: true
+        schema:
+          type: string
+  /api/courses/add:
+    post:
+      summary: ''
+      operationId: postApiCoursesAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/courses/{id}':
+    post:
+      summary: ''
+      operationId: postApiCoursesId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the course.'
+        example: error
+        required: true
+        schema:
+          type: string
+  /api/course-types/add:
+    post:
+      summary: ''
+      operationId: postApiCourseTypesAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/course-types/{id}':
+    post:
+      summary: ''
+      operationId: postApiCourseTypesId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    delete:
+      summary: ''
+      operationId: deleteApiCourseTypesId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the course type.'
+        example: quaerat
+        required: true
+        schema:
+          type: string
+  /api/evaluations/finish:
+    post:
+      summary: ''
+      operationId: postApiEvaluationsFinish
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/evaluations/add:
+    post:
+      summary: ''
+      operationId: postApiEvaluationsAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/evaluations/{id}':
+    post:
+      summary: ''
+      operationId: postApiEvaluationsId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the evaluation.'
+        example: dignissimos
+        required: true
+        schema:
+          type: string
+  /api/evaluations-meta/add:
+    post:
+      summary: ''
+      operationId: postApiEvaluationsMetaAdd
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/evaluations-meta/{id}':
+    post:
+      summary: ''
+      operationId: postApiEvaluationsMetaId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the evaluations metum.'
+        example: qui
+        required: true
+        schema:
+          type: string
+tags:
+  -
+    name: Authentication
+    description: ''
+  -
+    name: Endpoints
+    description: ''

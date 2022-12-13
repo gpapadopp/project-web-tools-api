@@ -20,6 +20,11 @@ class UsersController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register', 'verify']]);
     }
 
+    /**
+     * @group Authentication
+     *
+     * API endpoints for login users
+     */
     public function login(Request $request)
     {
         $request->validate([
