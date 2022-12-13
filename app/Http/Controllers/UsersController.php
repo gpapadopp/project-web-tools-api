@@ -215,6 +215,7 @@ class UsersController extends Controller
     public function getUserEvaluations() :JsonResponse {
         $all_user_evaluations = evaluations::query()
             ->where('user_id', Auth::id())
+            ->with(['user', 'course', 'course.course_type'])
             ->get();
         return response()->json([
             'status' => 'success',
