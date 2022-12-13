@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(UsersController::class)->middleware(['cors'])->group(function() {
     Route::get("users/", 'index');
+    Route::get('users/getEvaluations', 'getUserEvaluations');
     Route::post("users/login/", 'login');
     Route::get('users/{id}', 'specific');
     Route::post('users/verify', 'verify');
