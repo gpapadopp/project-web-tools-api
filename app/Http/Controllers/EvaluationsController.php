@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\courses;
 use App\Models\evaluations;
 use App\Models\evaluations_meta;
 use App\Models\roles;
@@ -150,6 +151,44 @@ class EvaluationsController extends Controller
         return response()->json([
             'status' => 'success',
             'updated_evaluation' => $evaluation_to_return,
+        ], 200);
+    }
+
+    public function getEvaluationsByDate(Request $request) :JsonResponse {
+        $evaluations_to_return = evaluations::query()
+            ->where('created_at', '>', $request->start_date)
+            ->where('created_at', '<', $request->end_date)
+            ->with(['user', 'course', 'course.course_type', 'course.user'])
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'evaluations' => $evaluations_to_return,
+        ], 200);
+    }
+
+    public function getEvaluationsByCourse(Request $request) :JsonResponse {
+        $evaluations_to_return = evaluations::query()
+            ->where('course_id', $request->course_id)
+            ->with(['user', 'course', 'course.course_type', 'course.user'])
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'evaluations' => $evaluations_to_return,
+        ], 200);
+    }
+
+    public function getEvaluationsByCourseType(Request $request) :JsonResponse {
+        $all_courses_in_course_type = courses::query()
+            ->select('id')
+            ->where('course_type_id', $request->course_type_id)
+            ->get();
+        $evaluations_to_return = evaluations::query()
+            ->whereIn('course_id', $all_courses_in_course_type)
+            ->with(['user', 'course', 'course.course_type', 'course.user'])
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'evaluations' => $evaluations_to_return,
         ], 200);
     }
 }

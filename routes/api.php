@@ -57,6 +57,9 @@ Route::controller(EvaluationsController::class)->middleware(['cors'])->group(fun
     Route::get('evaluations/', 'index');
     Route::get("evaluations/getByToken/{token}", 'getEvaluationByToken');
     Route::get('evaluations/{id}', 'specific');
+    Route::post('evaluations/getByDate', 'getEvaluationsByDate');
+    Route::post('evaluations/getByCourse', 'getEvaluationsByCourse');
+    Route::post('evaluations/getByCourseType', 'getEvaluationsByCourseType');
     Route::post('evaluations/finish', 'finishEvaluation');
     Route::post('evaluations/add', 'add');
     Route::post('evaluations/{id}', 'update');
