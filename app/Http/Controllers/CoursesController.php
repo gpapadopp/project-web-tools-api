@@ -11,16 +11,21 @@ use Illuminate\Support\Facades\Auth;
 
 class CoursesController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('auth:api', ['except' => []]);
     }
 
     public function index() :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['read_right'] == 1){
-            $all_courses = courses::with(['course_type', 'user'])->get();
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->read_right == 1){
+            $all_courses = courses::query()
+                ->with(['course_type', 'user'])
+                ->get();
             return response()->json([
                 'status' => 'success',
                 'all_courses' => $all_courses,
@@ -33,10 +38,15 @@ class CoursesController extends Controller
     }
 
     public function specific(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['read_right'] == 1){
-            $specific_course = courses::where('id', $request->id)
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->read_right == 1){
+            $specific_course = courses::query()
+                ->where('id', $request->id)
                 ->with(['course_type', 'user'])
                 ->first();
             return response()->json([
@@ -51,20 +61,25 @@ class CoursesController extends Controller
     }
 
     public function add(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['create_right'] == 1){
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->create_right == 1){
             $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'required|string|max:255',
                 'course_type_id' => 'required|int'
             ]);
-            $created_course = courses::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'user_id' => Auth::id(),
-                'course_type_id' => $request->course_type_id
-            ]);
+            $created_course = courses::query()
+                ->create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'user_id' => Auth::id(),
+                    'course_type_id' => $request->course_type_id
+                ]);
             return response()->json([
                 'status' => 'success',
                 'created_course' => $created_course,
@@ -77,9 +92,13 @@ class CoursesController extends Controller
     }
 
     public function update(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['update_right'] == 1){
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->update_right == 1){
             $fields = $request->validate([
                 'name' => 'string|max:255',
                 'description' => 'string|max:255',
@@ -88,9 +107,12 @@ class CoursesController extends Controller
             ]);
 
             if (sizeof($fields) != 0){
-                courses::where('id', $request->id)->update($fields);
+                courses::query()
+                    ->where('id', $request->id)
+                    ->update($fields);
             }
-            $course_to_return = courses::where('id', $request->id)
+            $course_to_return = courses::query()
+                ->where('id', $request->id)
                 ->with(['course_type', 'user'])
                 ->first();
             return response()->json([

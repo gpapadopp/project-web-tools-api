@@ -13,16 +13,21 @@ use Illuminate\Support\Str;
 
 class EvaluationsController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('auth:api', ['except' => []]);
     }
 
     public function index() :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['read_right'] == 1){
-            $all_evaluations = evaluations::with(['user', 'course', 'course.course_type'])->get();
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->read_right == 1){
+            $all_evaluations = evaluations::query()
+                ->with(['user', 'course', 'course.course_type'])
+                ->get();
             return response()->json([
                 'status' => 'success',
                 'all_evaluations' => $all_evaluations,
@@ -35,10 +40,15 @@ class EvaluationsController extends Controller
     }
 
     public function specific(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['read_right'] == 1){
-            $specific_evaluation = evaluations::where('id', $request->id)
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->read_right == 1){
+            $specific_evaluation = evaluations::query()
+                ->where('id', $request->id)
                 ->with(['user', 'course', 'course.course_type'])
                 ->first();
             return response()->json([
@@ -53,20 +63,25 @@ class EvaluationsController extends Controller
     }
 
     public function add(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['create_right'] == 1){
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->create_right == 1){
             $request->validate([
                 'course_id' => 'required|int'
             ]);
 
             $registration_token = Str::random(32);
 
-            $created_evaluations = evaluations::create([
-                'token' => $registration_token,
-                'is_done' => 0,
-                'course_id' => $request->course_id
-            ]);
+            $created_evaluations = evaluations::query()
+                ->create([
+                    'token' => $registration_token,
+                    'is_done' => 0,
+                    'course_id' => $request->course_id
+                ]);
             return response()->json([
                 'status' => 'success',
                 'created_evaluations' => $created_evaluations,
@@ -79,9 +94,13 @@ class EvaluationsController extends Controller
     }
 
     public function update(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['update_right'] == 1){
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->update_right == 1){
             $fields = $request->validate([
                 'course_id' => 'int',
                 'user_id' => 'int',
@@ -90,9 +109,12 @@ class EvaluationsController extends Controller
             ]);
 
             if (sizeof($fields) != 0){
-                evaluations::where('id', $request->id)->update($fields);
+                evaluations::query()
+                    ->where('id', $request->id)
+                    ->update($fields);
             }
-            $evaluation_to_return = evaluations::where('id', $request->id)
+            $evaluation_to_return = evaluations::query()
+                ->where('id', $request->id)
                 ->with(['user', 'course', 'course.course_type'])
                 ->first();
             return response()->json([
@@ -121,7 +143,8 @@ class EvaluationsController extends Controller
     }
 
     public function getEvaluationByToken(Request $request) :JsonResponse {
-        $evaluation_to_return = evaluations::where('token', $request->token)
+        $evaluation_to_return = evaluations::query()
+            ->where('token', $request->token)
             ->with(['user', 'course', 'course.course_type', 'course.user'])
             ->first();
         return response()->json([

@@ -15,8 +15,7 @@ use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('auth:api', ['except' => ['login', 'register', 'verify']]);
     }
 
@@ -25,8 +24,7 @@ class UsersController extends Controller
      *
      * API endpoints for login users
      */
-    public function login(Request $request)
-    {
+    public function login(Request $request) :JsonResponse {
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -66,18 +64,19 @@ class UsersController extends Controller
 
         $registration_token = Str::random(32);
 
-        $created_user = users::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'disabled' => $request->disabled,
-            'role_id' => $request->role_id,
-            'locked' => 0,
-            'token' => $registration_token,
-            'email' => $request->email
-        ]);
+        $created_user = users::query()
+            ->create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $request->phone,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'disabled' => $request->disabled,
+                'role_id' => $request->role_id,
+                'locked' => 0,
+                'token' => $registration_token,
+                'email' => $request->email
+            ]);
         return response()->json([
             'status' => 'success',
             'added_user' => $created_user,
@@ -85,10 +84,16 @@ class UsersController extends Controller
     }
 
     public function index() :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['read_right'] == 1){
-            $all_users = users::with(['role'])->get();
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->read_right == 1){
+            $all_users = users::query()
+                ->with(['role'])
+                ->get();
             return response()->json([
                 'status' => 'success',
                 'all_users' => $all_users,
@@ -101,10 +106,17 @@ class UsersController extends Controller
     }
 
     public function specific(Request $request): JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['read_right'] == 1){
-            $specific_user = users::where('id', $request->id)->with(['role'])->first();
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->read_right == 1){
+            $specific_user = users::query()
+                ->where('id', $request->id)
+                ->with(['role'])
+                ->first();
             return response()->json([
                 'status' => 'success',
                 'specific_users' => $specific_user,
@@ -117,9 +129,13 @@ class UsersController extends Controller
     }
 
     public function add(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['create_right'] == 1){
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->create_right == 1){
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
@@ -132,18 +148,19 @@ class UsersController extends Controller
 
             $registration_token = Str::random(32);
 
-            $created_user = users::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone' => $request->phone,
-                'username' => $request->username,
-                'password' => '-',
-                'disabled' => $request->disabled,
-                'role_id' => $request->role_id,
-                'locked' => 1,
-                'token' => $registration_token,
-                'email' => $request->email
-            ]);
+            $created_user = users::query()
+                ->create([
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'phone' => $request->phone,
+                    'username' => $request->username,
+                    'password' => '-',
+                    'disabled' => $request->disabled,
+                    'role_id' => $request->role_id,
+                    'locked' => 1,
+                    'token' => $registration_token,
+                    'email' => $request->email
+                ]);
             $this->sendEmail($request->email, $registration_token);
             return response()->json([
                 'status' => 'success',
@@ -157,9 +174,13 @@ class UsersController extends Controller
     }
 
     public function update(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['update_right'] == 1){
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->update_right == 1){
             $fields = $request->validate([
                 'first_name' => 'string|max:255',
                 'last_name' => 'string|max:255',
@@ -172,9 +193,14 @@ class UsersController extends Controller
             ]);
 
             if (sizeof($fields) !=0){
-                users::where('id', $request->id)->update($fields);
+                users::query()
+                    ->where('id', $request->id)
+                    ->update($fields);
             }
-            $user_to_return = users::where('id', $request->id)->with(['role'])->first();
+            $user_to_return = users::query()
+                ->where('id', $request->id)
+                ->with(['role'])
+                ->first();
             return response()->json([
                 'status' => 'success',
                 'updated_user' => $user_to_return,
@@ -187,10 +213,16 @@ class UsersController extends Controller
     }
 
     public function delete(Request $request) :JsonResponse {
-        $user_details = users::where('id', Auth::id())->first();
-        $user_roles = roles::where('id', $user_details['role_id'])->first();
-        if ($user_roles['delete_right'] == 1){
-            users::where('id', $request->id)->update(array('disabled' => 1));
+        $user_details = users::query()
+            ->where('id', Auth::id())
+            ->first();
+        $user_roles = roles::query()
+            ->where('id', $user_details->role_id)
+            ->first();
+        if ($user_roles->delete_right == 1){
+            users::query()
+                ->where('id', $request->id)
+                ->update(array('disabled' => 1));
             return response()->json([
                 'status' => 'success',
                 'message' => 'User Deleted',
@@ -207,10 +239,12 @@ class UsersController extends Controller
             'password' => 'required|string|max:255',
             'token' => 'required|string|max:255'
         ]);
-        users::where('token', $request->token)->update(array(
-            'password' => Hash::make($request->password),
-            'locked' => 0
-        ));
+        users::query()
+            ->where('token', $request->token)
+            ->update(array(
+                'password' => Hash::make($request->password),
+                'locked' => 0
+            ));
         return response()->json([
             'status' => 'success',
             'message' => 'User Confirmed Successfully',

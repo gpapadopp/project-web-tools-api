@@ -39,9 +39,6 @@ Route::controller(UsersController::class)->middleware(['cors'])->group(function(
 Route::controller(RolesController::class)->middleware(['cors'])->group(function() {
     Route::get('roles/', 'index');
     Route::get('roles/{id}', 'specific');
-    Route::post('roles/add', 'add');
-    Route::post('roles/{id}', 'update');
-    Route::delete('roles/{id}', 'delete');
 });
 
 Route::controller(CoursesController::class)->middleware(['cors'])->group(function() {
@@ -54,9 +51,6 @@ Route::controller(CoursesController::class)->middleware(['cors'])->group(functio
 Route::controller(CourseTypesController::class)->middleware(['cors'])->group(function() {
     Route::get("course-types/", 'index');
     Route::get('course-types/{id}', 'specific');
-    Route::post('course-types/add', 'add');
-    Route::post('course-types/{id}', 'update');
-    Route::delete('course-types/{id}', 'delete');
 });
 
 Route::controller(EvaluationsController::class)->middleware(['cors'])->group(function() {
@@ -73,6 +67,4 @@ Route::controller(EvaluationsMetaController::class)->middleware(['cors'])->group
     Route::get('evaluations-meta/', 'index');
     Route::get('evaluations-meta/{id}', 'specific');
     Route::post('evaluations-meta/add', 'add');
-    Route::post('evaluations-meta/{id}', 'update');
-    Route::delete("evaluations-meta/{id}", 'delete');
 });
